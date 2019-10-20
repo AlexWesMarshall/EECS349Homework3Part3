@@ -1,0 +1,47 @@
+Alexander Marshall, awm48
+EECS 349, Computer Security
+10/23/2019
+Homework 3 Part 3
+
+Question 2: Please assess its functionality and rewrite in C to printf() its output.
+
+push ebp
+mov ebp,esp
+and esp,0fffffff0h
+sub esp,40h
+call ___main
+mov dword ptr[esp+18h],0Ch
+mov dword ptr[esp+1Ch],0Fh
+mov dword ptr[esp+20h],0DDh
+mov dword ptr[esp+24h],3
+mov dword ptr[esp+28h],1B0h
+mov dword ptr[esp+2Ch],36h
+mov dword ptr[esp+30h],10h
+mov dword ptr[esp+34h],43h
+mov dword ptr[esp+3Ch],0
+mov dword ptr[esp+38h],0
+jmp short loc_40157F
+----------
+loc_401560	;CODE XREF: __main+84j
+mov eax,[esp+38h]
+mov eax,[esp+eax*4+18h]
+cmp eax,[esp+3Ch]
+jle short loc_40157A
+mov eax,[esp+38h]
+mov eax,[esp+eax*4+18h]
+mov esp[3Ch],eax
+----------
+loc_40157A	;CODE XREF: __main+5Ej
+add dword ptr[esp+38h],7
+----------
+loc_40157F	:CODE XREF: __main+5Ej
+cmp dword ptr[esp+38h],7
+jle short loc_401560
+mov eax,[esp+3Ch]
+mov [esp+4],eax
+mov dword ptr[esp], offset aD ; "%d"
+call __printf
+mov eax,0
+leave
+retn
+endp

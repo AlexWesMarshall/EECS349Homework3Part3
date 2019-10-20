@@ -1,0 +1,83 @@
+Alexander Marshall, awm48
+EECS 349, Computer Security
+10/23/2019
+Homework 3 Part 3
+
+Question 3: Please assess its functionality and rewrite in C to printf() its output.
+
+push ebp
+mov ebp,esp
+and esp,0FFFFFFF0h
+sub, esp, 20h
+call ___main
+mov dword ptr[esp+1Ch],64h
+jmp loc_4015d6
+--------------------
+loc_40151B	;CODE XREF: _main+DEj
+mov ecx,[esp+1Ch]
+mov edx,51EB851Fh
+mov eax,ecx
+imul edx
+sar edx,5
+mov eax,ecx
+sar eax,1Fh
+sub edx,eax
+mov eax,edx
+mov [esp+18h], eax
+mov eax, [esp+18h]
+imul edx,eax,-64h
+mov eax,[esp+1Ch]
+lea ecx,[edx+eax]
+mov edx,66666667h
+mov eax,ecx
+imul edx
+sar edx,2
+mov eax,ecx
+sar eax,1Fh
+sub edx,eax
+mov eax,edx
+mov [esp+14h],eax
+mov ecx,[esp+1Ch]
+mov edx,66666667H
+mov eax,ecx
+imul edx
+sar edx,2
+mov eax,ecx
+sar eax,1Fh
+sub edx,eax
+mov eax,edx
+shl eax,2
+add eax,edx
+add eax,eax
+sub ecx,eax
+mov eax,ecx
+mov [esp+10h],eax
+mov eax,[esp+18h]
+imul eax,[esp+18h]
+imul eax,[esp+18h]
+mov edx,eax
+mov eax,[esp+14h]
+imul eax,[esp+14h]
+imul eax,[esp+14h]
+add edx,eax
+mov eax,[esp+10h]
+imul eax,[esp+10h]
+imul eax,[esp+10h]
+add eax,edx
+cmp eax,[esp+1Ch]
+jnz short loc_4015D1
+mov eax,[esp+1Ch]
+mov [esp+4],eax
+mov dword ptr[esp], offset aD ; "%d "
+call _printf
+-----------
+loc_4015D1	;CODE XREF: _main+BBj
+add dword ptr[esp+1Ch],1
+-----------
+loc_4015D6	:CODE XREFL: _main+16j
+cmp dword ptr[esp+1Ch], 3E7h
+jle loc_40151B
+mov eax,0
+leave
+retn
+endp

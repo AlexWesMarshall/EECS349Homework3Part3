@@ -1,0 +1,84 @@
+Alexander Marshall, awm48
+EECS 349, Computer Security
+10/23/2019
+Homework 3 Part 3
+
+Question 1: Please assess its functionality and rewrite in C to printf() its output.
+
+argc = dword ptr 8
+argv = dword ptr 0ch
+envp = dword ptr 10h
+
+push ebp
+move ebp,esp
+and esp,0FFFFFFF0h
+sub esp,20h
+call ___main
+mov dword ptr[esp+1Ch], 3
+mov dword ptr[esp+18h], 5
+mov dword ptr[esp+14h], 0
+mov eax,[esp+1Ch]
+imul eax,[esp+18h]
+mov edx,eax
+mov eax,[esp+1Ch]
+mov ecx,eax
+shr ecx, 1Fh
+add eax,ecx
+sar eax,1
+sub edx,eax
+mov eax,edx
+mov [esp+14h],eax
+mov eax,[esp+14h]
+mov [esp+4],eax
+mov dword ptr[esp], offset aD ; "%d"
+call __printf
+mov eax,0
+leave
+retn
+_main endp
+
+
+--> These first three lines declare out current variables
+argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
+argv = dword ptr 0ch --> Declares argv as a 32 bit, dword, variable with an offset of 0c, hexadecimal, or 12 
+envp = dword ptr 10h --> Declares envp as a 32 bit, dword, variable with an offset of 10, hexadecimal, or 16 
+
+--> Now we begin the actual operation of the assembly code
+push ebp --> We push ebp onto the stack and decrement the stack pointer by 4. This establishes a new stack frame
+move ebp,esp --> We move the value of the esp register into the ebp register
+and esp,0FFFFFFF0h --> Aligns the stack on a 16 byte boundary, a requirement for many runtimes nowadays (due to SSE2)
+sub esp,20h --> We subtract {hexadecimal: 20} {decimal: 32} from the register esp so we have value -32
+call ___main --> We now call the main function of the c program
+mov dword ptr[esp+1Ch], 3 --> We move the value of 3 to the ptr array at location [esp+1Ch]. Now ptr[-4] is 3
+mov dword ptr[esp+18h], 5 --> We move the value of 5 to the ptr array at location [esp+18h]. Now ptr[-8] is 5
+mov dword ptr[esp+14h], 0 --> We move the value of 0 to the ptr array at location [esp+14h]. Now ptr[-12] is 0. These previous 3 lines help us set up our local variables
+mov eax,[esp+1Ch] --> We move [esp+1Ch] with value 3 to the eax register so it now stores value, 3
+imul eax,[esp+18h] --> We do a signed multiplication of eax which has a value 3, with [esp+18h] which has a value 5. So the register eax now holds value 15
+mov edx,eax --> We move the value of eax register, 15, to the edx register so it now stores value 15
+mov eax,[esp+1Ch] --> We move the value of [esp+1Ch], 3, to the eax register.
+mov ecx,eax --> We move the value of the eax register, 3, to the ecx register
+shr ecx, 1Fh --> We shift the bits of ecx by the value of {hexadecimal: 1F} {decimal: 31}. This is the equivalent to dividing by 2^31 or isolating the last bit of ecx. 5 in binary is 101 preceeded by 0. So we isolate the 0 and store that value in ecx
+add eax,ecx --> We add the value of the ecx register, 0, to the eax register, 3, so eax afterwards has a value 3.
+sar eax,1 --> We shift the bits of eax right by 1 or divide by 2. So now eax has a value of 1 
+sub edx,eax --> We subtract the value of the eax register, 1, from edx register, 15, so the edx register now contains value, 14.
+mov eax,edx --> We move the value of the edx register, 14, to the eax register so eax now stores value 14
+mov [esp+14h],eax --> We move the value of the eax register, 14, to the stack location [esp+14h] so that now stores value 14
+mov eax,[esp+14h] --> We move the value [esp+14h], 14, to the eax register
+mov [esp+4],eax --> We move the value of the eax register, 14, to [esp+4] so it stores value 14
+mov dword ptr[esp], offset aD ; "%d" --> We print the value of ptr[esp] which is 14
+call __printf --> We call the function printf so we can actually print the value
+mov eax,0 --> We move 0 back to the eax register
+leave --> These last three lines finish of the main function
+retn
+_main endp
+
+Current Guess At What the C Code is
+
+int main(int argc, const char **argv, const char **envp) {
+    int x = 3;
+    int y = 5;
+    int z = 0;
+    z = (x*y) - (x + (x / 2^31)) / 2;
+    printf("%d", z);
+    return z;
+}
