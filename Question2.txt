@@ -5,43 +5,65 @@ Homework 3 Part 3
 
 Question 2: Please assess its functionality and rewrite in C to printf() its output.
 
-push ebp
-mov ebp,esp
-and esp,0fffffff0h
-sub esp,40h
-call ___main
-mov dword ptr[esp+18h],0Ch
-mov dword ptr[esp+1Ch],0Fh
-mov dword ptr[esp+20h],0DDh
-mov dword ptr[esp+24h],3
-mov dword ptr[esp+28h],1B0h
-mov dword ptr[esp+2Ch],36h
-mov dword ptr[esp+30h],10h
-mov dword ptr[esp+34h],43h
-mov dword ptr[esp+3Ch],0
-mov dword ptr[esp+38h],0
-jmp short loc_40157F
+These lines declare the local variables of the program
+argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
+argv = dword ptr 0Ch --> Declares argv as a 32 bit, dword, variable with an offset of 0c, hexadecimal, or 12 
+envp = dword ptr 10h --> Declares envp as a 32 bit, dword, variable with an offset of 10, hexadecimal, or 16 
+
+push ebp --> pushes the ebp register to the stack
+mov ebp,esp --> moves the value of the esp register into the ebp register. ebp now stors
+and esp,0fffffff0h --> Aligns the stack on a 16 byte boundary
+sub esp,40h --> subtracts the value { 40 : hexadecimal} { 64 : decimal } from the ebp register, 0, so it stores -64
+call ___main --> we call the main function
+These lines declare an array [12, 15, 221, 3, 432, 54, 16, 67, 0, 0]
+mov dword ptr[esp+18h],0Ch --> we move the value { 0C : hexadecimal} { 12 : decimal } to ptr[-64 + 24]. ptr[-40] = 12
+mov dword ptr[esp+1Ch],0Fh --> we move the value { 0F : hexadecimal} { 15 : decimal } to ptr[-64 + 28]. ptr[-36] = 15
+mov dword ptr[esp+20h],0DDh --> we move the value { 0DD : hexadecimal} { 221 : decimal } to ptr[-64 + 32]. ptr[-32] = 221
+mov dword ptr[esp+24h],3 --> we move the value { 3 : hexadecimal} { 3 : decimal } to ptr[-64 + 36]. ptr[-28] = 3
+mov dword ptr[esp+28h],1B0h --> we move the value { 1B0 : hexadecimal} { 432 : decimal } to ptr[-64 + 40]. ptr[-24] = 432
+mov dword ptr[esp+2Ch],36h --> we move the value { 36 : hexadecimal} { 54 : decimal } to ptr[-64 + 44]. ptr[-20] = 54
+mov dword ptr[esp+30h],10h --> we move the value { 10 : hexadecimal} { 16 : decimal } to ptr[-64 + 48]. ptr[-16] = 16
+mov dword ptr[esp+34h],43h --> we move the value { 43 : hexadecimal} { 67 : decimal } to ptr[-64 + 52]. ptr[-12] = 67
+mov dword ptr[esp+3Ch],0 --> we move the value { 0 : hexadecimal} { 0 : decimal } to ptr[-64 + 56]. ptr[-8] = 0
+mov dword ptr[esp+38h],0 --> we move the value { 0 : hexadecimal} { 0 : decimal } to ptr[-64 + 60]. ptr[-4] = 0
+jmp short loc_40157F --> we jump to loc_40157F in memory
 ----------
 loc_401560	;CODE XREF: __main+84j
-mov eax,[esp+38h]
-mov eax,[esp+eax*4+18h]
-cmp eax,[esp+3Ch]
-jle short loc_40157A
-mov eax,[esp+38h]
-mov eax,[esp+eax*4+18h]
-mov esp[3Ch],eax
+mov eax,[esp+38h] --> we move the value at the end of the array into the eax register
+mov eax,[esp+eax*4+18h] --> we move the value of [-40h+(eax*4)+18h] into the eax register. 
+cmp eax,[esp+3Ch] --> we compare the value of second to last element in the array with eax, [-40h+(eax*4)+18h].
+jle short loc_40157A --> if eax is less than [-40h+(eax*4)+18h] we jump to memory location loc_40157A
+mov eax,[esp+38h] --> else we move the last value of the array into the eax register
+mov eax,[esp+eax*4+18h] --> we move the value of [40h+(eax*4)+18h]  into the eax register
+mov esp[3Ch],eax --> we move the value of the eax register into the second to last value of the array
 ----------
 loc_40157A	;CODE XREF: __main+5Ej
-add dword ptr[esp+38h],7
+add dword ptr[esp+38h],1 --> We add 1 to the last value in the array
 ----------
 loc_40157F	:CODE XREF: __main+5Ej
-cmp dword ptr[esp+38h],7
-jle short loc_401560
-mov eax,[esp+3Ch]
-mov [esp+4],eax
-mov dword ptr[esp], offset aD ; "%d"
+cmp dword ptr[esp+38h],7 --> we compare the value at the end of the array, ptr[esp+38h], with 7.
+jle short loc_401560 --> if the value is less than 7 we jump to memory location loc_401560
+mov eax,[esp+3Ch]  --> else we move the value of the second to last value in the array into the eax register
+mov [esp+4],eax --> we move the value of the eax register into  [esp+4]
+mov dword ptr[esp], offset aD ; "%d" --> we print the contents of the array then the rest of the lines end the program
 call __printf
 mov eax,0
 leave
 retn
 endp
+
+
+My attempt at c code
+#include <stdio.h>
+int main(int argc, const char **argv, const char **envp) {
+    int x[] = {12,15,221,3,432,54,16,67,0,0};
+    while(x[9]<=7){
+        if(x[9] > (-64 + (x[9]*4) + 24)){
+            x[8] = (-64 + (x[9]*4) + 24);
+        }
+        x[9]++;
+    }
+    int y = x[9];
+    printf("%d", y);
+    return y;
+}
