@@ -4,14 +4,16 @@ EECS 349, Computer Security
 Homework 3 Part 3
 
 Question 2: Please assess its functionality and rewrite in C to printf() its output.
+The functionality of this code is declaring an array, performing arithmetic operations on the last two elements until the last element is greater than 7.
+The end array looks like [12, 15, 221, 3, 432, 54, 16, 67, -16, 7]
 
 These lines declare the local variables of the program
 argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
 argv = dword ptr 0Ch --> Declares argv as a 32 bit, dword, variable with an offset of 0c, hexadecimal, or 12 
 envp = dword ptr 10h --> Declares envp as a 32 bit, dword, variable with an offset of 10, hexadecimal, or 16 
 
-push ebp --> pushes the ebp register to the stack
-mov ebp,esp --> moves the value of the esp register into the ebp register. ebp now stors
+push ebp --> pushes the  base pointer register ebp to the stack
+mov ebp,esp --> moves the value of the stack pointer register esp into the ebp register.
 and esp,0fffffff0h --> Aligns the stack on a 16 byte boundary
 sub esp,40h --> subtracts the value { 40 : hexadecimal} { 64 : decimal } from the ebp register, 0, so it stores -64
 call ___main --> we call the main function
@@ -35,7 +37,7 @@ cmp eax,[esp+3Ch] --> we compare the value of second to last element in the arra
 jle short loc_40157A --> if eax is less than [-40h+(eax*4)+18h] we jump to memory location loc_40157A
 mov eax,[esp+38h] --> else we move the last value of the array into the eax register
 mov eax,[esp+eax*4+18h] --> we move the value of [40h+(eax*4)+18h]  into the eax register
-mov esp[3Ch],eax --> we move the value of the eax register into the second to last value of the array
+mov [esp+3Ch],eax --> we move the value of the eax register into the second to last value of the array
 ----------
 loc_40157A	;CODE XREF: __main+5Ej
 add dword ptr[esp+38h],1 --> We add 1 to the last value in the array
@@ -53,17 +55,16 @@ retn
 endp
 
 
-My attempt at c code
+C Code
 #include <stdio.h>
 int main(int argc, const char **argv, const char **envp) {
     int x[] = {12,15,221,3,432,54,16,67,0,0};
-    while(x[9]<=7){
+    while(x[9] < 7){
         if(x[9] > (-64 + (x[9]*4) + 24)){
             x[8] = (-64 + (x[9]*4) + 24);
         }
         x[9]++;
     }
-    int y = x[9];
-    printf("%d", y);
-    return y;
+    printf("x = %d\n", x);
+    return 0;
 }

@@ -36,5 +36,16 @@ add dword ptr [esp+1ACh], 1
 goto loc_401619
 
 mov eax, [esp+1A8h]
-mov [esp+8], eax   ;int
-mov eax, [esp+
+mov [esp+8], eax	;int
+mov eax, [esp+1A4h]
+mov [esp+4], eax	;int
+lea eax,[esp+1B0h+var_19C]
+mov [esp],eax	;int *
+call __Z5proc1Piii	;proc1(int *, int, int)
+mov [esp+4],eax
+mov dword ptr [esp], offset aD	;"%d\n"
+call __printf
+mov eax,0
+leave
+retn
+_main endp
