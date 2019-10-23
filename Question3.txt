@@ -5,6 +5,7 @@ Homework 3 Part 3
 
 Question 3: Please assess its functionality and rewrite in C to printf() its output.
 
+--> These first three lines declare the vars for the program
 argc = dword ptr 0
 argv = dword ptr 0Ch
 envp = dword ptr 10h
@@ -79,9 +80,34 @@ loc_4015D1	;CODE XREF: _main+BBj
 add dword ptr[esp+1Ch],1 --> adds 1 to the value of ptr[esp+1Ch]
 -----------
 loc_4015D6	:CODE XREFL: _main+16j
-cmp dword ptr[esp+1Ch], 3E7h --> We compare the value of 3E7h to ptr[-4] = 64h
+cmp dword ptr[esp+1Ch], 3E7h --> We compare the value of 3E7h, 999 in decimal, to ptr[-4] = 64h
 jle loc_40151B --> if ptr[-4] is less than 3E7h we jump to memory location loc_40151B 
 mov eax,0 --> Else we end the program and return
 leave
 retn
 endp
+
+C Code
+
+int main(int argc, const char **argv, const char **envp) {
+    int x = 100;
+    while(x<=999){
+        int z = 1374389535;
+        z = z*z;
+        z = z >> 5;
+        z = z - (x >> 32);
+        z = -100 + z;
+        int y = (1717986919*1717986919 / 4 - (x >>32));
+        y = y/4;
+        y = y+y;
+        y = y+y-x;
+        if(z*z*z + y*y*y + x*x*x<=x){
+            printf("x = %d ",x);
+            printf("y = %d ", y);
+            printf("z = %d \n", z);
+            
+        }     
+        x+=1;
+    }
+    return 0;
+}

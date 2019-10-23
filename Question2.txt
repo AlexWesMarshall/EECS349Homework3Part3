@@ -4,8 +4,7 @@ EECS 349, Computer Security
 Homework 3 Part 3
 
 Question 2: Please assess its functionality and rewrite in C to printf() its output.
-The functionality of this code is declaring an array, performing arithmetic operations on the last two elements until the last element is greater than 7.
-The end array looks like [12, 15, 221, 3, 432, 54, 16, 67, -16, 7]
+The functionality of this code is declaring an array, then looping through to find the biggest value and storing the largest value in the first spot
 
 These lines declare the local variables of the program
 argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
@@ -47,13 +46,12 @@ cmp dword ptr[esp+38h],7 --> we compare the value at the end of the array, ptr[e
 jle short loc_401560 --> if the value is less than 7 we jump to memory location loc_401560
 mov eax,[esp+3Ch]  --> else we move the value of the second to last value in the array into the eax register
 mov [esp+4],eax --> we move the value of the eax register into  [esp+4]
-mov dword ptr[esp], offset aD ; "%d" --> we print the contents of the array then the rest of the lines end the program
+mov dword ptr[esp], offset aD ; "%d" --> we print the first value of the array which should be the biggest value 432
 call __printf
 mov eax,0
 leave
 retn
 endp
-
 
 C Code
 #include <stdio.h>

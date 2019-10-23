@@ -5,39 +5,6 @@ Homework 3 Part 3
 
 Question 1: Please assess its functionality and rewrite in C to printf() its output.
 
-argc = dword ptr 8
-argv = dword ptr 0ch
-envp = dword ptr 10h
-
-push ebp
-move ebp,esp
-and esp,0FFFFFFF0h
-sub esp,20h
-call ___main
-mov dword ptr[esp+1Ch], 3
-mov dword ptr[esp+18h], 5
-mov dword ptr[esp+14h], 0
-mov eax,[esp+1Ch]
-imul eax,[esp+18h]
-mov edx,eax
-mov eax,[esp+1Ch]
-mov ecx,eax
-shr ecx, 1Fh
-add eax,ecx
-sar eax,1
-sub edx,eax
-mov eax,edx
-mov [esp+14h],eax
-mov eax,[esp+14h]
-mov [esp+4],eax
-mov dword ptr[esp], offset aD ; "%d"
-call __printf
-mov eax,0
-leave
-retn
-_main endp
-
-
 --> These first three lines declare out current variables
 argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
 argv = dword ptr 0ch --> Declares argv as a 32 bit, dword, variable with an offset of 0c, hexadecimal, or 12 
@@ -72,13 +39,13 @@ leave --> These last three lines finish of the main function
 retn
 _main endp
 
-Current Guess At What the C Code is
-
+C Code:
+#include <stdio.h>
 int main(int argc, const char **argv, const char **envp) {
     int x = 3;
     int y = 5;
     int z = 0;
-    z = (x*y) - (x + (x / 2^31)) / 2;
+    z = (x*y) - ((x + (x >> 31)) >> 1);
     printf("%d", z);
-    return z;
+    return 0;
 }
