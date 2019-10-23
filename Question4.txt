@@ -1,6 +1,40 @@
 Alexander Marshall, awm48
 EECS 349, Computer Security
-10/23/2019
+10/24/2019
 Homework 3 Part 3
 
 Question 4: Given binary HW2-P3-Q5.exe, please us IDA to assess its functionality and rewrite in C to printf() its output
+
+Assembly Code
+
+var19C = dword ptr -19Ch
+argc = dword ptr 8
+argv = dword ptr 0Ch
+envp = dword ptr 10h
+
+push ebp
+mov ebp, esp
+and esp, 0FFFFFFF0h
+sub esp, 1B0h
+call ___main
+mov dword ptr [esp+1A8h], 7
+mov dword ptr [esp+1A4h], 64h
+mov dword ptr[esp+1ACh], 0
+jmp short loc_401619
+
+loc_401619
+mov eax, [esp+1ACh]
+cmp eax, [esp+1A4h]]
+jl short loc_4015FC
+
+loc_4015FC
+mov eax, [esp+1ACh]
+lea edx, [eax+1]
+mov eax,[esp+1ACh]
+mov [esp+eax*4+14h], edx
+add dword ptr [esp+1ACh], 1
+goto loc_401619
+
+mov eax, [esp+1A8h]
+mov [esp+8], eax   ;int
+mov eax, [esp+

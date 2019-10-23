@@ -1,6 +1,6 @@
 Alexander Marshall, awm48
 EECS 349, Computer Security
-10/23/2019
+10/24/2019
 Homework 3 Part 3
 
 Question 1: Please assess its functionality and rewrite in C to printf() its output.

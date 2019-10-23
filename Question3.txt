@@ -1,83 +1,87 @@
 Alexander Marshall, awm48
 EECS 349, Computer Security
-10/23/2019
+10/24/2019
 Homework 3 Part 3
 
 Question 3: Please assess its functionality and rewrite in C to printf() its output.
 
-push ebp
-mov ebp,esp
-and esp,0FFFFFFF0h
-sub, esp, 20h
-call ___main
-mov dword ptr[esp+1Ch],64h
-jmp loc_4015d6
+argc = dword ptr 0
+argv = dword ptr 0Ch
+envp = dword ptr 10h
+
+push ebp --> pushes the ebp register to the stack and decreases the stack counter by 4
+mov ebp,esp --> moves the value of the esp register into the ebp register
+and esp,0FFFFFFF0h --> Aligns the stack to 16 bit
+sub, esp, 20h --> Subtracts 20h from the esp register so it now contains -20h
+call ___main --> calls the main function
+mov dword ptr[esp+1Ch],64h --> Moves the value 64h to the memory address ptr[-20h+1Ch]. ptr[-4]=64h
+jmp loc_4015d6 --> We jump to memory location loc_4015d6
 --------------------
 loc_40151B	;CODE XREF: _main+DEj
-mov ecx,[esp+1Ch]
-mov edx,51EB851Fh
-mov eax,ecx
-imul edx
-sar edx,5
-mov eax,ecx
-sar eax,1Fh
-sub edx,eax
-mov eax,edx
-mov [esp+18h], eax
-mov eax, [esp+18h]
-imul edx,eax,-64h
-mov eax,[esp+1Ch]
-lea ecx,[edx+eax]
-mov edx,66666667h
-mov eax,ecx
-imul edx
-sar edx,2
-mov eax,ecx
-sar eax,1Fh
-sub edx,eax
-mov eax,edx
-mov [esp+14h],eax
-mov ecx,[esp+1Ch]
-mov edx,66666667H
-mov eax,ecx
-imul edx
-sar edx,2
-mov eax,ecx
-sar eax,1Fh
-sub edx,eax
-mov eax,edx
-shl eax,2
-add eax,edx
-add eax,eax
-sub ecx,eax
-mov eax,ecx
-mov [esp+10h],eax
-mov eax,[esp+18h]
-imul eax,[esp+18h]
-imul eax,[esp+18h]
-mov edx,eax
-mov eax,[esp+14h]
-imul eax,[esp+14h]
-imul eax,[esp+14h]
-add edx,eax
-mov eax,[esp+10h]
-imul eax,[esp+10h]
-imul eax,[esp+10h]
-add eax,edx
-cmp eax,[esp+1Ch]
-jnz short loc_4015D1
-mov eax,[esp+1Ch]
-mov [esp+4],eax
-mov dword ptr[esp], offset aD ; "%d "
-call _printf
+mov ecx,[esp+1Ch] --> we move the value of [-4] = 64h to the ecx register
+mov edx,51EB851Fh --> we move the value {hexadecimal:51EB851Fh} {decimal:1374389535} to the edx register
+mov eax,ecx --> we move the value of the ecx register to the eax register
+imul edx --> we do a signed multiply of edx with edx and store it in the edx register. edx = edx*edx = 1374389535 * 1374389535 = 1.8889466e+18
+sar edx,5 --> we shift the edx register right by 5 bits and store it in the edx register
+mov eax,ecx --> We move the value of the ecx register to the eax register
+sar eax,1Fh --> We shift the eax register to the right by 1Fh bits and store is in the eax register
+sub edx,eax --> We subtract the value of the eax register from the edx register and store it in the edx register
+mov eax,edx --> We move the value of the edx register to the eax register
+mov [esp+18h], eax --> We move the value of the eax register to the memory location [-64h+18h] = [-46h] = [-70] in decimal
+mov eax, [esp+18h] --> we then move the value from the memory location [-70] to the eax register
+imul edx,eax,-64h --> we do a signed multiply of -64h*eax and we store it in the edx register 
+mov eax,[esp+1Ch] --> we move the value of [-4] = 64h to the eax register
+lea ecx,[edx+eax] --> we compute the effective address of [edx+eax] and store it in the first operand, ecx.
+mov edx,66666667h --> we then move the value {666666667:hexadecimal} {1717986919:decimal} to the edx register so it now stores value 1717986919
+mov eax,ecx --> We move the value of the ecx register to the eax register
+imul edx --> we do a signed multiply of edx with edx and implicitely store it in edx. edx = 1717986919*1717986919 = 2.9514791e+18
+sar edx,2 --> we shift the bits of the edx register to the right twice.
+mov eax,ecx --> We move the value of the ecx register to the eax register
+sar eax,1Fh --> we shift the bits of the eax register right by 1Fh bits or 31 in decimal. Sar also clears the most significant bit
+sub edx,eax --> We subtract the value of the eax register from the edx register and store it back in the edx register
+mov eax,edx --> We move the value of the edx register to the eax register
+mov [esp+14h],eax --> we move the value of the eax register to the memory address [-64h+14h]=[-40]
+mov ecx,[esp+1Ch] --> we move the value of [-64h+1Ch] to the ecx register
+mov edx,66666667H --> we move the value of {666666667:hexadecimal} {1717986919:decimal} to the edx register so it now stores value 1717986919
+mov eax,ecx --> We move the value of the ecx register to the eax register
+imul edx --> we do a signed multiply of the edx with edx and implicitely store it in the edx register
+sar edx,2 --> we shift the bits of the edx register to the right twice and clear the most significant bit
+mov eax,ecx --> we move the value of the ecx register to the eax reigster
+sar eax,1Fh --> we shift the bits of eax to the right bty 1Fh, or 31 in decimal, and clear the most significant bit.
+sub edx,eax --> We subtract the value of the eax register from the edx register and store it in the edx register
+mov eax,edx --> we move the value of the edx register to the eax register
+shl eax,2 --> we shift the bits of the eax register to the left twice and clear the least significant bit
+add eax,edx --> we add the value of the edx register with the eax register and store it in the eax register.
+add eax,eax --> we add the value of the eax register with the eax register and store it in the eax register.
+sub ecx,eax --> we subtract the value of the eax register from the ecx register and store it in the ecx register. 
+mov eax,ecx --> we move the value of the ecx register to the eax register
+mov [esp+10h],eax --> we move the value of the eax register to the memory address [esp+10h] so it stores eax's value
+mov eax,[esp+18h] --> we move the value of the memory address [esp+18h] to the eax register
+imul eax,[esp+18h] --> we do a signed multiply of the memory address [esp+18h] with the value of the eax register and store it in the eax register.
+imul eax,[esp+18h] --> we repeat the line above and do a signed multiply of the memory address [esp+18h] with the value of the eax register and store it in the eax register.
+mov edx,eax --> we move the value of the eax register to the edx register
+mov eax,[esp+14h] --> we move the value of the memory address [esp+14h] to the eax register
+imul eax,[esp+14h] --> we do a signed multiply of the eax register with the memory address [esp+14h] and store it in the eax register
+imul eax,[esp+14h] --> we repeat the line above and do a signed multiply of the eax register with the memory address [esp+14h] and store it in the eax register
+add edx,eax --> we add the value of the eax register with the edx register and store it in the edx register
+mov eax,[esp+10h] --> we move the value of the memory address [esp+10h] to the eax register
+imul eax,[esp+10h] --> we do a signed multiply of the eax register and the memory address [esp+10h] and store it in the eax register
+imul eax,[esp+10h] --> we repeat the line above and do a signed multiply of the eax register and the memory address [esp+10h] and store it in the eax register
+add eax,edx --> we add the value of the edx register with the eax register and store it in the eax register
+cmp eax,[esp+1Ch] --> we compare the value of the eax register with the memory address [esp+1Ch]
+jnz short loc_4015D1 --> we jump to the memory location loc_4015D1 if the not zero. This is the same as saying as if they are not equal. 
+mov eax,[esp+1Ch] --> else we move the value of the memory address [esp+1Ch] to the eax register
+mov [esp+4],eax --> we move the value of the eax register to the memory address [esp+4] 
+mov dword ptr[esp], offset aD ; "%d " --> we print the value of the ptr[esp]
+call _printf --> calls printf
 -----------
 loc_4015D1	;CODE XREF: _main+BBj
-add dword ptr[esp+1Ch],1
+add dword ptr[esp+1Ch],1 --> adds 1 to the value of ptr[esp+1Ch]
 -----------
 loc_4015D6	:CODE XREFL: _main+16j
-cmp dword ptr[esp+1Ch], 3E7h
-jle loc_40151B
-mov eax,0
+cmp dword ptr[esp+1Ch], 3E7h --> We compare the value of 3E7h to ptr[-4] = 64h
+jle loc_40151B --> if ptr[-4] is less than 3E7h we jump to memory location loc_40151B 
+mov eax,0 --> Else we end the program and return
 leave
 retn
 endp
