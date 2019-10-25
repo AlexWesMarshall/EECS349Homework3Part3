@@ -5,6 +5,12 @@ Homework 3 Part 3
 
 Question 1: Please assess its functionality and rewrite in C to printf() its output.
 
+FUNCTIONALITY
+The functionality of this code is an assignment operation. It sets a variable to z = (x*y) - ((x + (x >> 31)) >> 1)
+In this code x = 3 and y = 5 and z = 0 initially. At the end it prints the variable.
+
+Assembly Code Annotated
+
 --> These first three lines declare out current variables
 argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
 argv = dword ptr 0ch --> Declares argv as a 32 bit, dword, variable with an offset of 0c, hexadecimal, or 12 
@@ -38,14 +44,3 @@ mov eax,0 --> We move 0 back to the eax register
 leave --> These last three lines finish of the main function
 retn
 _main endp
-
-C Code:
-#include <stdio.h>
-int main(int argc, const char **argv, const char **envp) {
-    int x = 3;
-    int y = 5;
-    int z = 0;
-    z = (x*y) - ((x + (x >> 31)) >> 1);
-    printf("%d", z);
-    return 0;
-}

@@ -5,46 +5,51 @@ Homework 3 Part 3
 
 Question 4: Given binary HW2-P3-Q5.exe, please us IDA to assess its functionality and rewrite in C to printf() its output
 
-Assembly Code
+FUNCTIONALITY
+I was actually going to give my best attempt at this question. Then Professor Ye said in class that she made this question difficult with the intent of us not being able to solve it. 
+So in a way she was right. I didn't try to annotate proc1. There was too much going on and there was not enough time to work on this assignment.
 
-var19C = dword ptr -19Ch
-argc = dword ptr 8
-argv = dword ptr 0Ch
-envp = dword ptr 10h
+Assembly Code Annotated
 
-push ebp
-mov ebp, esp
-and esp, 0FFFFFFF0h
-sub esp, 1B0h
-call ___main
-mov dword ptr [esp+1A8h], 7
-mov dword ptr [esp+1A4h], 64h
-mov dword ptr[esp+1ACh], 0
-jmp short loc_401619
+-->Declare local vars
+var19C = dword ptr -19Ch --> variable var19C is set to 32bit value -19Ch, -412
+argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
+argv = dword ptr 0Ch --> Declares argv as a 32 bit, dword, variable with an offset of 0c, hexadecimal, or 12 
+envp = dword ptr 10h --> Declares envp as a 32 bit, dword, variable with an offset of 10, hexadecimal, or 16
+
+push ebp --> pushes the  base pointer register ebp to the stack
+mov ebp,esp --> moves the value of the stack pointer register esp into the ebp register.
+and esp,0FFFFFFF0h --> Aligns the stack on a 16 byte boundary
+sub esp, 1B0h --> subtracts the value 1B0h from the esp register
+call ___main --> calls the main function
+mov dword ptr [esp+1A8h], 7 --> sets the memory address [-1B0h+1A8h]=[-8] to 7
+mov dword ptr [esp+1A4h], 64h --> sets the memory address [-12] to 64h
+mov dword ptr[esp+1ACh], 0 --> sets the memory address  [-4] to 0
+jmp short loc_401619 --> jump to memory location loc_401619
 
 loc_401619
-mov eax, [esp+1ACh]
-cmp eax, [esp+1A4h]]
-jl short loc_4015FC
+mov eax, [esp+1ACh] --> moves the value of the memory address [-4] to the eax register
+cmp eax, [esp+1A4h]] --> compares the memory address [-12] to the eax register
+jl short loc_4015FC --> if less than jump to memory location loc_4015FC
 
 loc_4015FC
-mov eax, [esp+1ACh]
-lea edx, [eax+1]
-mov eax,[esp+1ACh]
-mov [esp+eax*4+14h], edx
-add dword ptr [esp+1ACh], 1
-goto loc_401619
+mov eax, [esp+1ACh] --> moves the value of the memory address [-4] to eax
+lea edx, [eax+1] --> copy the value eax+1 to the edx register
+mov eax,[esp+1ACh] --> moves the value of the memory address [-4] to eax
+mov [esp+eax*4+14h], edx --> moves the value of edx to the memory address [-1B0+eax*4+14h]
+add dword ptr [esp+1ACh], 1 --> adds the value 1 to the value stored at memory address [-4]
+goto loc_401619 --> go to memory location loc_401619
 
-mov eax, [esp+1A8h]
-mov [esp+8], eax	;int
-mov eax, [esp+1A4h]
-mov [esp+4], eax	;int
-lea eax,[esp+1B0h+var_19C]
-mov [esp],eax	;int *
-call __Z5proc1Piii	;proc1(int *, int, int)
-mov [esp+4],eax
-mov dword ptr [esp], offset aD	;"%d\n"
-call __printf
+mov eax, [esp+1A8h] --> moves [-8] to eax, 
+mov [esp+8], eax	;int --> move the value of eax to [esp+8]
+mov eax, [esp+1A4h] --> move the value of [-12] to eax
+mov [esp+4], eax	;int --> move eax to [esp+4]
+lea eax,[esp+1B0h+var_19C] --> move the value of esp+1B0h+var_19C=-1B0h+1B0h+-19Ch=-19Ch to eax
+mov [esp],eax	;int * --> move the value of eax to [esp]
+call __Z5proc1Piii	;proc1(int *, int, int) --> call the function proc1([esp],[esp+4],[esp+8])
+mov [esp+4],eax --> move the value of eax into [esp+4]
+mov dword ptr [esp], offset aD	;"%d\n" --> print out [esp]
+call __printf --> calls printf and the rest end the program
 mov eax,0
 leave
 retn

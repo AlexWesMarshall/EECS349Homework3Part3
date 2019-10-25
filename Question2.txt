@@ -4,7 +4,12 @@ EECS 349, Computer Security
 Homework 3 Part 3
 
 Question 2: Please assess its functionality and rewrite in C to printf() its output.
+
+FUNCTIONALITY
 The functionality of this code is declaring an array, then looping through to find the biggest value and storing the largest value in the first spot
+At the end of the program it prints the largest value it found which is 432
+
+Assembly Code Annotated
 
 These lines declare the local variables of the program
 argc = dword ptr 8 --> Declares argc as a 32 bit, dword, variable with an offset of 8 fromstack base
@@ -52,17 +57,3 @@ mov eax,0
 leave
 retn
 endp
-
-C Code
-#include <stdio.h>
-int main(int argc, const char **argv, const char **envp) {
-    int x[] = {12,15,221,3,432,54,16,67,0,0};
-    while(x[9] < 7){
-        if(x[9] > (-64 + (x[9]*4) + 24)){
-            x[8] = (-64 + (x[9]*4) + 24);
-        }
-        x[9]++;
-    }
-    printf("%d", x[9]);
-    return 0;
-}
